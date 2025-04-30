@@ -1,0 +1,321 @@
+Youtube ad calculator
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Income Calculator (RPM)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+    }
+    .calculator-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    h2 {
+      font-size: 24px;
+      color: #cc0000;
+      text-align: center;
+    }
+    h4 a {
+      color: #777;
+      font-size: 14px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+    select,
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+    }
+    button {
+      background-color: #cc0000;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      margin-top: 30px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #b30000;
+    }
+    #result, #explanation {
+      margin-top: 25px;
+      text-align: center;
+    }
+    #result {
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+    #explanation {
+      font-size: 14px;
+      color: #555;
+    }
+    #chart-heading {
+      display: none;
+    }
+    #breakdownChart {
+      margin-top: 20px;
+      display: none;
+      width: 100% !important;
+      max-width: 450px;
+      height: auto !important;
+    }
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 20px;
+      }
+      label, select, button {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <div class="box" id="calculatorBox">
+      <h2>YouTube Income Calculator</h2>
+      <h4><a href="https://learningrevolution.net" target="_blank">by Learning Revolution</a></h4>
+      <div id="dynamicFields">
+        <label for="yt-views">Number of Views:</label>
+        <select id="yt-views">
+          <option value="1000">1,000 (One Thousand)</option>
+          <option value="10000">10,000 (Ten Thousand)</option>
+          <option value="100000">100,000 (One Hundred Thousand)</option>
+          <option value="1000000">1,000,000 (One Million)</option>
+          <option value="2000000">2,000,000 (Two Million)</option>
+          <option value="5000000">5,000,000 (Five Million)</option>
+          <option value="10000000">10,000,000 (Ten Million)</option>
+        </select>
+
+        <label for="yt-niche">Select Your Niche:</label>
+        <select id="yt-niche">
+  <option value="1">Finance & Investing ($9 - $11 RPM)</option>
+  <option value="2">Tech Reviews ($7 - $9 RPM)</option>
+  <option value="3">Education ($6 - $8 RPM)</option>
+  <option value="4">Marketing & Business ($7.5 - $9.5 RPM)</option>
+  <option value="5">Health & Fitness ($4 - $6 RPM)</option>
+  <option value="6">Gaming ($2 - $4 RPM)</option>
+  <option value="7">Beauty & Lifestyle ($3 - $5 RPM)</option>
+  <option value="8">Food & Recipes ($3 - $5 RPM)</option>
+  <option value="9">Comedy & Skits ($2 - $4 RPM)</option>
+  <option value="10">Vlogs ($2 - $4 RPM)</option>
+  <option value="11">Real Estate ($8 - $10 RPM)</option>
+  <option value="12">Insurance ($9 - $11 RPM)</option>
+  <option value="13">Cryptocurrency ($7 - $9 RPM)</option>
+  <option value="14">Cars & Automotive ($6 - $8 RPM)</option>
+  <option value="15">Travel & Adventure ($3 - $5 RPM)</option>
+  <option value="16">Parenting & Kids ($3 - $4.5 RPM)</option>
+  <option value="17">DIY & Crafts ($2.5 - $4.5 RPM)</option>
+  <option value="18">Home Improvement ($5 - $7 RPM)</option>
+  <option value="19">Product Reviews ($4 - $6 RPM)</option>
+  <option value="20">Luxury Lifestyle ($6 - $8 RPM)</option>
+  <option value="21">Books & Literature ($2 - $3.5 RPM)</option>
+  <option value="22">Pets & Animals ($2.5 - $4 RPM)</option>
+  <option value="23">Motivational & Success ($5 - $7 RPM)</option>
+  <option value="24">Online Courses & Coaching ($7 - $9 RPM)</option>
+  <option value="25">Photography & Filmmaking ($4 - $6 RPM)</option>
+  <option value="26">Self Improvement ($3.5 - $5.5 RPM)</option>
+  <option value="27">Science & Education ($5 - $6.5 RPM)</option>
+  <option value="28">History & Documentaries ($4 - $6 RPM)</option>
+  <option value="29">Tech Tutorials ($6 - $8 RPM)</option>
+  <option value="30">Fitness Challenges ($4 - $6 RPM)</option>
+  <option value="31">Productivity & Tools ($5 - $7 RPM)</option>
+  <option value="32">Fashion & Style ($2.5 - $4.5 RPM)</option>
+  <option value="33">Mobile App Reviews ($3.5 - $5.5 RPM)</option>
+  <option value="34">Language Learning ($4 - $6 RPM)</option>
+  <option value="35">Mindfulness & Mental Health ($3.5 - $5 RPM)</option>
+  <option value="36">Music Channels ($1.5 - $3 RPM)</option>
+  <option value="37">Spirituality & Wellness ($3 - $4.5 RPM)</option>
+  <option value="38">Unboxing & Hauls ($2 - $3.5 RPM)</option>
+  <option value="39">Makeup Tutorials ($2.5 - $4 RPM)</option>
+  <option value="40">Art & Illustration ($3 - $4.5 RPM)</option>
+  <option value="41">Photography Editing ($4 - $6 RPM)</option>
+  <option value="42">Productivity Apps ($5 - $6.5 RPM)</option>
+  <option value="43">Stock Market Analysis ($7 - $9 RPM)</option>
+  <option value="44">Investing Tips ($8 - $10 RPM)</option>
+  <option value="45">Budgeting & Frugal Living ($5 - $6.5 RPM)</option>
+  <option value="46">Online Side Hustles ($6 - $8 RPM)</option>
+  <option value="47">Tech News ($4.5 - $6.5 RPM)</option>
+  <option value="48">VR & AR Content ($3 - $5 RPM)</option>
+  <option value="49">AI Tools & Demos ($6 - $8 RPM)</option>
+  <option value="50">Ecommerce & Dropshipping ($7 - $9 RPM)</option>
+</select>
+
+        <label for="yt-location">Audience Location:</label>
+        <select id="yt-location">
+          <option value="1">North America (USA / Canada)</option>
+          <option value="2">Europe</option>
+          <option value="3">South Asia (India, Pakistan, Bangladesh)</option>
+          <option value="4">Southeast Asia (Indonesia, Philippines, Vietnam)</option>
+          <option value="5">East Asia (Japan, South Korea, Taiwan)</option>
+          <option value="6">Middle East & North Africa</option>
+          <option value="7">Sub-Saharan Africa</option>
+          <option value="8">Latin America</option>
+          <option value="9">Australia & New Zealand</option>
+          <option value="10">Global Mix</option>
+        </select>
+
+        <label for="yt-content">Content Type:</label>
+        <select id="yt-content">
+          <option value="1">Shorts (Lower RPM)</option>
+          <option value="2">Long-form Videos (Higher RPM)</option>
+          <option value="3">Live Streams (Varied RPM)</option>
+        </select>
+
+        <label for="yt-ads">Ads Per 10-Minute Video:</label>
+        <select id="yt-ads">
+          <option value="1">1-2 Ads (Low)</option>
+          <option value="2">3-4 Ads (Optimal)</option>
+          <option value="3">5+ Ads (High)</option>
+        </select>
+
+        <label for="yt-engagement">Ad Engagement:</label>
+        <select id="yt-engagement">
+          <option value="1">High (80–120+ per 1K views)</option>
+          <option value="2">Medium (40–79 per 1K views)</option>
+          <option value="3">Low (Below 40 per 1K views)</option>
+        </select>
+
+        <label for="yt-season">Time of Year:</label>
+        <select id="yt-season">
+          <option value="1">Q4 (Oct - Dec)</option>
+          <option value="2">Q2 & Q3 (Apr - Sep)</option>
+          <option value="3">Q1 (Jan - Mar)</option>
+        </select>
+
+        <label for="yt-watch">Average Watch Time:</label>
+        <select id="yt-watch">
+          <option value="1">80%+ (High Retention)</option>
+          <option value="2">50-79% (Average)</option>
+          <option value="3">Below 50% (Low Retention)</option>
+        </select>
+
+        <button onclick="calculateYouTubeIncome()">Calculate Earnings</button>
+      </div>
+      <div id="result"></div>
+      <div id="explanation"></div>
+      <div id="chart-heading">
+        <h3 style="margin-top: 30px; font-size: 16px; text-align: center; color: #333;">Factors Impacting Your YouTube Earnings</h3>
+        <p style="text-align: center; font-size: 13px; color: #555; margin-bottom: 10px;">This chart shows how different factors contribute to your estimated revenue.</p>
+      </div>
+      <canvas id="breakdownChart" style="display: none; margin: 0 auto;"></canvas>
+    </div>
+  </div>
+
+  <script>
+    function calculateYouTubeIncome() {
+      const views = parseInt(document.getElementById('yt-views').value);
+      const niche = parseInt(document.getElementById('yt-niche').value);
+      const location = parseInt(document.getElementById('yt-location').value);
+      const content = parseInt(document.getElementById('yt-content').value);
+      const ads = parseInt(document.getElementById('yt-ads').value);
+      const engagement = parseInt(document.getElementById('yt-engagement').value);
+      const season = parseInt(document.getElementById('yt-season').value);
+      const watch = parseInt(document.getElementById('yt-watch').value);
+
+      const rpmRanges = [
+  [9, 11], [7, 9], [6, 8], [7.5, 9.5], [4, 6], [2, 4], [3, 5], [3, 5], [2, 4], [2, 4],
+  [8, 10], [9, 11], [7, 9], [6, 8], [3, 5], [3, 4.5], [2.5, 4.5], [5, 7], [4, 6], [6, 8],
+  [2, 3.5], [2.5, 4], [5, 7], [7, 9], [4, 6], [3.5, 5.5], [5, 6.5], [4, 6], [6, 8], [4, 6],
+  [5, 7], [2.5, 4.5], [3.5, 5.5], [4, 6], [3.5, 5], [1.5, 3], [3, 4.5], [2, 3.5], [2.5, 4], [3, 4.5],
+  [4, 6], [5, 6.5], [7, 9], [8, 10], [5, 6.5], [6, 8], [4.5, 6.5], [3, 5], [6, 8], [7, 9]
+];
+      const locationMultiplier = [1.5, 1.3, 0.6, 0.65, 1.2, 1.1, 0.5, 0.7, 1.4, 1.0];
+      const contentMultiplier = [0.5, 1.2, 0.8];
+      const adsMultiplier = [1.0, 1.15, 1.25];
+      const engagementMultiplier = [1.3, 1.0, 0.6];
+      const seasonalityMultiplier = [1.4, 1.0, 0.8];
+      const watchTimeMultiplier = [1.3, 1.0, 0.6];
+
+      const [minRPM, maxRPM] = rpmRanges[niche - 1];
+      const base = views / 1000;
+      const lm = locationMultiplier[location - 1];
+      const cm = contentMultiplier[content - 1];
+      const am = adsMultiplier[ads - 1];
+      const em = engagementMultiplier[engagement - 1];
+      const sm = seasonalityMultiplier[season - 1];
+      const wm = watchTimeMultiplier[watch - 1];
+
+      const multiplier = lm * cm * am * em * sm * wm;
+      const minEarnings = base * minRPM * multiplier;
+      const maxEarnings = base * maxRPM * multiplier;
+
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('result').innerText = `Estimated Creator Earnings: $${minEarnings.toFixed(2)} - $${maxEarnings.toFixed(2)}`;
+      document.getElementById('explanation').style.display = 'block';
+      document.getElementById('explanation').innerText = "This estimate is based on RPM (Revenue Per 1,000 Views), adjusted for niche, audience region, content type, ad frequency, engagement, season, and watch time.";
+      document.getElementById('chart-heading').style.display = 'block';
+      document.getElementById('breakdownChart').style.display = 'block';
+
+      const ctx = document.getElementById('breakdownChart').getContext('2d');
+      if (window.breakdownChart instanceof Chart) window.breakdownChart.destroy();
+      const totalMultiplier = lm + cm + am + em + sm + wm;
+      window.breakdownChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Audience Location', 'Content Type', 'Ads per Video', 'Ad Engagement', 'Seasonality', 'Watch Time'],
+          datasets: [{
+            data: [
+              (lm / totalMultiplier) * 100,
+              (cm / totalMultiplier) * 100,
+              (am / totalMultiplier) * 100,
+              (em / totalMultiplier) * 100,
+              (sm / totalMultiplier) * 100,
+              (wm / totalMultiplier) * 100
+            ],
+            backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40']
+          }]
+        },
+        options: {
+          plugins: {
+            datalabels: {
+              color: '#fff',
+              formatter: (value, ctx) => {
+                const label = ctx.chart.data.labels[ctx.dataIndex];
+                return `${label}\n${value.toFixed(1)}%`;
+              }
+            },
+            legend: {
+              display: false
+            }
+          }
+        },
+        plugins: [ChartDataLabels]
+      });
+    }
+  </script>
+</body>
+</html>
